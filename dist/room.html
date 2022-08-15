@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
-    <title>ghostie</title>
+    <title>ghostie | ready</title>
     <meta content="Notifies you when long-running commands complete" name="description"/>
     <link href="https://fav.farm/👻" rel="icon"/>
     <link href="style.css" rel="stylesheet"/>
@@ -19,7 +19,7 @@
 </div>
 <div class="max-w-2xl mx-auto text-slate-800">
     <div class="py-10 px-4 space-y-5">
-        <h2 class="text-xl text-black">Messages:</h2>
+        <h2 class="text-xl text-black">Log:</h2>
         <ul class="space-y-5" id="messages"></ul>
         <hr/>
         <h2 class="text-xl text-black">How-to:</h2>
@@ -31,10 +31,22 @@
         <p class="p-4 rounded-lg border border-slate-300 bg-white text-sm">
             <code class="block whitespace-pre overflow-x-scroll" id="code-2"></code>
         </p>
-        <p>Using function:</p>
+        <p>Using function (zsh):</p>
         <p class="p-4 rounded-lg border border-slate-300 bg-white text-sm">
             <code class="block whitespace-pre overflow-x-scroll" id="code-3"></code>
         </p>
+        <p>Python:</p>
+        <p class="p-4 rounded-lg border border-slate-300 bg-white text-sm">
+            <code class="block whitespace-pre overflow-x-scroll" id="code-4"></code>
+        </p>
+        <hr/>
+        <div class="text-center space-y-2">
+            <p class="text-sm opacity-50"><a class="underline before:content-['↗_']"
+                                             href="https://support.google.com/chrome/answer/3220216">Enable
+                notifications in Chrome</a></p>
+            <p class="text-sm opacity-50"><a class="underline before:content-['↗_']" href="https://mzl.la/3wxG4er">Enable
+                notifications in Firefox</a></p>
+        </div>
     </div>
 </div>
 <script src="/socket.io/socket.io.js"></script>
@@ -49,8 +61,13 @@
 
     // function use case
     code = document.getElementById("code-3");
-    code.textContent = `$ function notify() { curl -X POST -d "$@" ${window.location} }\r\n`;
+    code.textContent = `$ function notify() { curl -X POST -d "$@" ${window.location}; }\r\n`;
     code.textContent += `$ python build.py && notify "build worked" || notify "build failed"`;
+
+    // python use case
+    code = document.getElementById("code-4");
+    code.textContent = `import requests\r\n`;
+    code.textContent += `response = requests.post('${window.location}')`;
 
     // handle incoming events
     const messages = document.getElementById("messages");
@@ -113,7 +130,7 @@
         appendMessage(`🔴 disconnect | reason: ${reason}`, "red");
     });
 
-    socket.onAny((event) => {
+    socket.on("event", (event) => {
         const title = "Ghostie says",
             content = event ? `💬 ${event}` : '💬 Boo! Command finished';
         appendMessage(content);
