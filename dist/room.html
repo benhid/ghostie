@@ -1,92 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport" />
     <title>ghostie | ready</title>
-    <meta content="Notifies you when long-running commands complete" name="description"/>
-    <link href="https://fav.farm/👻" rel="icon"/>
-    <link href="style.css" rel="stylesheet"/>
-</head>
-<body class="bg-[#fafafa]">
-<div class="md:px-10 px-4 py-5 bg-white shadow">
-    <header>
+    <meta content="Notifies you when long-running commands complete" name="description" />
+    <link href="https://fav.farm/👻" rel="icon" />
+    <link href="style.css" rel="stylesheet" />
+  </head>
+  <body class="bg-[#fafafa]">
+    <div class="md:px-10 px-4 py-5 bg-white shadow">
+      <header>
         <div class="flex-row space-x-5">
-            <span class="cursor-default select-none">👻.link</span>
-            <a class="text-sm transition-opacity opacity-50 hover:opacity-100" href="https://github.com/benhid/ghostie">GitHub</a>
+          <span class="cursor-default select-none">👻.link</span>
+          <a class="text-sm transition-opacity opacity-50 hover:opacity-100" href="https://github.com/benhid/ghostie"
+            >GitHub</a
+          >
         </div>
-    </header>
-</div>
-<div class="max-w-2xl mx-auto text-slate-800">
-    <div class="py-10 px-4 space-y-5">
+      </header>
+    </div>
+    <div class="max-w-2xl mx-auto text-slate-800">
+      <div class="py-10 px-4 space-y-5">
         <h2 class="text-xl text-black">Log:</h2>
         <ul class="space-y-5" id="messages"></ul>
-        <hr/>
+        <hr />
         <h2 class="text-xl text-black">How-to:</h2>
         <p>Simple:</p>
         <p class="p-4 rounded-lg border border-slate-300 bg-white text-sm">
-            <code class="block whitespace-pre overflow-x-scroll" id="code-1"></code>
+          <code class="block whitespace-pre overflow-x-scroll" id="code-1"></code>
         </p>
         <p>Custom content:</p>
         <p class="p-4 rounded-lg border border-slate-300 bg-white text-sm">
-            <code class="block whitespace-pre overflow-x-scroll" id="code-2"></code>
+          <code class="block whitespace-pre overflow-x-scroll" id="code-2"></code>
         </p>
         <p>Using function (zsh):</p>
         <p class="p-4 rounded-lg border border-slate-300 bg-white text-sm">
-            <code class="block whitespace-pre overflow-x-scroll" id="code-3"></code>
+          <code class="block whitespace-pre overflow-x-scroll" id="code-3"></code>
         </p>
         <p>Python:</p>
         <p class="p-4 rounded-lg border border-slate-300 bg-white text-sm">
-            <code class="block whitespace-pre overflow-x-scroll" id="code-4"></code>
+          <code class="block whitespace-pre overflow-x-scroll" id="code-4"></code>
         </p>
-        <hr/>
+        <hr />
         <div class="text-center space-y-2">
-            <p class="text-sm opacity-50"><a class="underline before:content-['↗_']"
-                                             href="https://support.google.com/chrome/answer/3220216">Enable
-                notifications in Chrome</a></p>
-            <p class="text-sm opacity-50"><a class="underline before:content-['↗_']" href="https://mzl.la/3wxG4er">Enable
-                notifications in Firefox</a></p>
+          <p class="text-sm opacity-50">
+            <a class="underline before:content-['↗_']" href="https://support.google.com/chrome/answer/3220216"
+              >Enable notifications in Chrome</a
+            >
+          </p>
+          <p class="text-sm opacity-50">
+            <a class="underline before:content-['↗_']" href="https://mzl.la/3wxG4er">Enable notifications in Firefox</a>
+          </p>
         </div>
+      </div>
     </div>
-</div>
-<script src="/socket.io/socket.io.js"></script>
-<script>
-    // simple use case
-    let code = document.getElementById("code-1");
-    code.textContent = `$ sleep 5 && curl -X POST ${window.location}`;
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      // simple use case
+      let code = document.getElementById("code-1");
+      code.textContent = `$ sleep 5 && curl -X POST ${window.location}`;
 
-    // custom content use case
-    code = document.getElementById("code-2");
-    code.textContent = `$ ./script.sh && curl -X POST -d "script finished" ${window.location}`;
+      // custom content use case
+      code = document.getElementById("code-2");
+      code.textContent = `$ ./script.sh && curl -X POST -d "script finished" ${window.location}`;
 
-    // function use case
-    code = document.getElementById("code-3");
-    code.textContent = `$ function notify() { curl -X POST -d "$@" ${window.location}; }\r\n`;
-    code.textContent += `$ python build.py && notify "build worked" || notify "build failed"`;
+      // function use case
+      code = document.getElementById("code-3");
+      code.textContent = `$ function notify() { curl -X POST -d "$@" ${window.location}; }\r\n`;
+      code.textContent += `$ python build.py && notify "build worked" || notify "build failed"`;
 
-    // python use case
-    code = document.getElementById("code-4");
-    code.textContent = `import requests\r\n`;
-    code.textContent += `response = requests.post('${window.location}')`;
+      // python use case
+      code = document.getElementById("code-4");
+      code.textContent = `import requests\r\n`;
+      code.textContent += `response = requests.post('${window.location}')`;
 
-    // handle incoming events
-    const messages = document.getElementById("messages");
+      // handle incoming events
+      const messages = document.getElementById("messages");
 
-    const appendMessage = (content, color) => {
+      const appendMessage = (title, content, color, date) => {
         let li = document.createElement("li");
-        li.className = "first:scale-100 scale-95 text-slate-800 space-y-2 first:shadow-md shadow p-5 rounded-lg border-4 bg-opacity-50";
+        li.className =
+          "first:scale-100 scale-95 text-slate-800 space-y-2 first:shadow-md shadow p-5 rounded-lg border-4 bg-opacity-50";
 
-        if (color === 'green') {
-            li.className += " border-green-700 bg-green-50";
-        } else if (color === 'red') {
-            li.className += " border-red-700 bg-red-50";
+        if (color === "green") {
+          li.className += " border-green-700 bg-green-50";
+        } else if (color === "red") {
+          li.className += " border-red-700 bg-red-50";
         } else {
-            li.className += " border-cyan-700 bg-cyan-50";
+          li.className += " border-cyan-700 bg-cyan-50";
         }
 
         // show the date and time
         let p = document.createElement("p");
-        p.textContent = new Date().toLocaleString();
+        p.textContent = date;
         p.className = "text-slate-600 text-sm";
         li.appendChild(p);
 
@@ -97,45 +103,53 @@
 
         // append to the beginning
         messages.prepend(li);
-    };
+      };
 
-    const showNotification = (title, content) => {
+      const showNotification = (title, content) => {
         if (!window.Notification) {
-            console.log('Browser does not support notifications.');
+          console.log("Browser does not support notifications.");
         } else {
-            // check whether notification permissions have already been granted
-            if (Notification.permission !== "denied") {
-                Notification.requestPermission();
-            }
+          // check whether notification permissions have already been granted
+          if (Notification.permission !== "denied") {
+            Notification.requestPermission();
+          }
 
-            // if it's okay let's create a notification
-            if (Notification.permission === "granted") {
-                new Notification(title, {
-                    body: content,
-                    icon: 'data:image/png;base64,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'
-                });
-            }
+          // if it's okay let's create a notification
+          if (Notification.permission === "granted") {
+            new Notification(title, {
+              body: content,
+              icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAMAAABiM0N1AAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAACuUExURUdwTJSUlYuMjYKDhFBQUZeYmZGSkoKCg6WmpqGhol1dXYyOj42Oj42Oj6KkpVJSU1NTVcHCw15eX3p6e3Z3d/T1+P3///n6/Onq7Nvc3r/AwQgHCJ+foO/w8q2usMXFx8/Q0pCQkaenqbO0tsrLzbm6vNTV1+Lj5ZiYmYmHiR0bG3h5ee5tp2xrbDU0NUdHR/CPw19dXu1Yk++At8opZONEgKooU6FjdH4XLlcQFDTFNxwAAAAVdFJOUwCAZOb6R6T+DyiL69TEutC3fraiwo5NtTEAAAciSURBVFjD5ZhpQ+o4FIZlbcuijt7ShXRJ27QNtXhRhDv//4/Ne06CK8x4Zz7OQUFJ8uQ9Sxa4uvrfmjf5w5jn/ifKYLpczOd6Pl8sp8N/y5pMF1IUaVmqMk0L0cr5cvgvUN5Ut4XKqjoiq+sqLotWLye/yxmOZBHnURMmSeL7fpKETZTHqZwPfgvjDpy2rEHxgyBYrYIVXnw/bOpYyOnvuAdOXIcJQd4sCJIwqorfIQ0dGUeh/wHDKIiqCj39drocqc5xoMmQht8M0FKnNThnQX4YZWLufTNAImsozKuPqIBJSVOX8lvOeSPjmAEFq9Mvp45zB+e+U05TR1QQRKQz5pMk1S6/JQgVdA5kYuSjBrJi/s+ShlpkUUjVHNDjHSaMEqoA1HhetoOzi3M5fZ3AvZdp1TCIWYbnr0L5uNlsd/EKVUkFvnTfFiU2BuZo2bavpeGNWkWeWZJh+atquzbWJ7RSskKepvYWsihIIGKSxqVY2Bkm8AyghDJ1YvkrtWHKBi9jClKVypNvU1lkWSmHVDVxlaXSShrotIrCMAiFUyYWFSTb9YYfYK0FgpWrUyl5cwyv4vb6aqqLrM6VsDNMtcLmEUTkyq4JjKDU+gVJm/U2TLChtAubmzat6jwWC4yEBCxq69tSYhcKkzGP2xlJwY7kkLF3cQCQGJllMkWOIwT/+mogU0ioleDouQsC+TU7sd5EK4p6wJ5tHx+3DGsZ5HB/T6DokEW4NpFFFTVNnl57JmkEqgDZYnC9ovwRCJzdjklrGZAEBrnXqBVsnQppQ7Qy7KhNxSTPIVDYbBm0DX1WNCbQeLcbMyiFoqzohpYTUhLbyZU7pcIJqVyLgWtATcDh3RSrhGwlWdF4bHyLkqgmkDs0HKpP2lgGsshRyvhfpdd/GFC4UuPtWBlOEkQmRBykdRfQMVB019dFmTeJWTHXSNVk3mJfRX9IVKkFhdig8WPNSIKZ7DeIUeEIRds6r2HBVegukTdeXegRa2FATE5CAwpBsvnfVj4fTIVT8B7hsyCzZQ5e13sS5q+gkDH0Q7RV+sh13TV+aEHKDsGmIq9tlcsSmeL1Gb0DWUv4OfDrMs0arP2wMaCMB5AgedowISk2OoPGgj6gjPkB70X0YFBF+0tCKXNO+6U316lx7gRqzDGdJB9QfHhjrAHlgXEslW87+BAHNMobHU+uVSK1J/9pKzmd/qI6KfI50WXrvJ0p7sKOT2qH/wikWetbrh42k3yYpDrKUsQopP1EOKN3p9xkpAtVkRKH7yBN2K8v2A6CGKRImSp092H7HnQSpLpRJ1CiefrNn2Tmmf93whOoaHBnKmT36bC8J1KWCyfNAAIqiPrN+s/Dr1c7/Fpv+hp+GZBu60yBs/x0N3HvOy1SpTWBIurcJKE47Pf7Axv+2MsoabgJoFI6qhS6G325Brg/OqcVjiwJ1PB1ryn3L2zmZS9wA4zMTTAr206A8+PMdcK97zsHdcCKqHNet/snthfzfKxqQ8KNEtnSzlkOlVPfSYGQ19w3z3NJoIeHpxf84vkY5zmjCFRIp7+/dHeb4LCLCVQTp6r0HhgDgr0cVcWkmu64aTv/m/vWoEVB14zJqyzT+4eHZyIx6OlYVpVFIdriby5J7oJCZOVkWQzQM+yBn5+fjmmWZYZEoMXlS6mnhSIQY7KYQD9/Eun5Ga8AxbEl5VRDl682A40Q5VZOHCsGEYqefxJIGRK6oKgHlz3DfaLi6IACsyBjpAjvQRTPhU8BF32bUBVV0GMwSsnD0/Mb6MUpYUBlPBn2j0u+TREi5KXKlCrZxO7FxJni9HSQeIs+LMVmtos3d7opZcSJ6XMVrCy6gykhSv6+F/ZtIqFb2o68C6FGzohT0oACI1LhHPZ2feyPLd4qYERi3UKfDbdHoc5Ij+lPI3CpO/LCPxy0EG/vmwlTeVYSrm7UDk5RCDLWlKZCH4+kpiCZtqEk5y5I8kbaCCotR/DUnCcYRZlnaFsicZjOS5qSoAwfOOnjKxnPjLJhQ9LVa0tLJCvpS+ImdLmlNtNbSu5eciVnZOQy9Eg0STQZ577Wkos7qTKOCeoqNXdPla3jyoBaatCvJFpwn/ZsOiIxueForbH94R4vTFQNCMVgmhytmUQ6S+EMPkUagk4cx+lgRDpJMj5TU8dNaGNNeFd+cO7ewY4WE4f79mRdx70pA4iS4jbb1HeWhAx8OGkndBQh1ZjT6XpcOsl2vSVx1ohDbeNHPHY7QrX0LUUp3h2ROInouwueske/m9vZ7Pbm8XHcO9L0Rim2uiMKmma3Y7TtOgeDUFlt179KmtEIqMGE6MnfpbjuZGZVtZR1brsbeq5r2jAPNyKN/d1b4mY3u5563szeV6o3vL0hN3r29mMbsdjJ3fjufQF48OVuNvmy5XnD2d3tzc3d/eBrm0uNGPT5bffCxumyXWz7H3wZ9xemY4TnLoEj2gAAAABJRU5ErkJggg==",
+            });
+          }
         }
-    }
+      };
 
-    const socket = io();
+      const socket = io();
 
-    socket.on("connect", () => {
-        appendMessage(`🟢 connected | session id: ${socket.id}`, "green");
+      socket.on("connect", () => {
+        const content = `🟢 connected | session id: ${socket.id}`,
+          color = "green",
+          date = new Date().toLocaleString();
+        appendMessage("", content, color, date);
         // connected, lets sign-up to receive messages for this room
-        socket.emit('join', window.location.pathname);
-    });
+        socket.emit("join", window.location.pathname);
+      });
 
-    socket.on("disconnect", (reason) => {
-        appendMessage(`🔴 disconnect | reason: ${reason}`, "red");
-    });
+      socket.on("disconnect", (reason) => {
+        const content = `🔴 disconnect | reason: ${reason}`,
+          color = "red",
+          date = new Date().toLocaleString();
+        appendMessage(title, content, color, date);
+      });
 
-    socket.on("event", (event) => {
+      socket.on("event", (event, insertedAt, silent) => {
         const title = "Ghostie says",
-            content = event ? `💬 ${event}` : '💬 Boo! Command finished';
-        appendMessage(content);
-        showNotification(title, content);
-    });
-</script>
-</body>
+          content = event ? `💬 ${event}` : "💬 Boo! Notification received",
+          color = "cyan",
+          date = new Date(insertedAt).toLocaleString();
+        appendMessage(title, content, color, date);
+        !silent && showNotification(title, content);
+      });
+    </script>
+  </body>
 </html>

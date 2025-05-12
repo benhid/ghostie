@@ -1,6 +1,6 @@
 {
   "name": "ghostie",
-  "version": "0.0.2",
+  "version": "0.0.5",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -12,6 +12,7 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
+    "better-sqlite3": "^7.6.2",
     "pino": "^8.0.0",
     "pino-http": "^7.1.0",
     "socket.io": "^4.5.1"
